@@ -5,13 +5,11 @@
 
 package iesmartinezm.psp.practica1.dgo.psp.u2.t1;
 
-/**
- *
- * @author ciclot
- */
-public class DgoPspU2T1 {
+public class GestorTrabajoApp {
 
+    public static final int NUMERO_TRABAJADORES = 10, M = NUMERO_TRABAJADORES;
+    public static final int NUMERO_JEFES = 1, N = NUMERO_JEFES;
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+
     }
 }

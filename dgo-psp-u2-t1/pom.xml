@@ -9,6 +9,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>20</maven.compiler.source>
         <maven.compiler.target>20</maven.compiler.target>
-        <exec.mainClass>iesmartinezm.psp.practica1.dgo.psp.u2.t1.DgoPspU2T1</exec.mainClass>
+        <exec.mainClass>iesmartinezm.psp.practica1.dgo.psp.u2.t1.GestorTrabajoApp</exec.mainClass>
     </properties>
 </project>
