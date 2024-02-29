@@ -1,57 +1,51 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package iesmartinezm.psp.practica1.dgo.psp.u3.p1;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/**
- *
- * @author ciclot
- */
 public class JugadorClient {
 
-    private static final int PUERTO = 6000;
+    private static final int PUERTO = 5555;
     private static final String SERVER = "localhost";
 
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
-        String nombre_cliente = scanner.nextLine();
-        Acreditacion acreditacion;
+        System.out.print("Ingrese su nombre de jugador: ");
+        String nombreJugador = scanner.nextLine();
 
-        Socket clientSocket = new Socket();
-        InetSocketAddress addr = new InetSocketAddress(SERVER, PUERTO);
-        try {
+        try (Socket clientSocket = new Socket()) {
+            InetSocketAddress addr = new InetSocketAddress(SERVER, PUERTO);
             clientSocket.connect(addr);
 
-            DataOutputStream flujo_salida = new DataOutputStream(clientSocket.getOutputStream());
-            flujo_salida.writeUTF(nombre_cliente);
+            DataOutputStream flujoSalida = new DataOutputStream(clientSocket.getOutputStream());
+            flujoSalida.writeUTF(nombreJugador);
 
-            ObjectInputStream flujo_entrada_objeto = new ObjectInputStream(clientSocket.getInputStream());
-            try {
-                acreditacion = (Acreditacion) flujo_entrada_objeto.readObject();
-                
-                if (acreditacion.isParticipacionValida()){
-                    
+            Token tokenManager = new Token();
+            String token = tokenManager.generateToken(nombreJugador);
+            flujoSalida.writeUTF(token);
+
+            DataInputStream flujoEntrada = new DataInputStream(clientSocket.getInputStream());
+            String mensaje;
+            while ((mensaje = flujoEntrada.readUTF()) != null) {
+                System.out.println("SERVIDOR: " + mensaje);
+
+                if (mensaje.startsWith("Intenta adivinar")) {
+                    System.out.print("Ingrese su intento: ");
+                    int intento = scanner.nextInt();
+                    DataOutputStream flujoSalidaNumero = new DataOutputStream(clientSocket.getOutputStream());
+                    flujoSalidaNumero.writeInt(intento);
+                } else if (mensaje.startsWith("¡¡Enhorabuena!!")) {
+                    break; 
                 }
-
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(JugadorClient.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-        } catch (IOException ex) {
-            Logger.getLogger(JugadorClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
     }
-
 }
